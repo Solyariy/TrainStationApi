@@ -1,0 +1,10 @@
+[project]
+name = "trainstationapi"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.13"
+dependencies = [
+    "black>=25.11.0",
+    "django-rest-framework>=0.1.0",
+    "flake8>=7.3.0",
+]

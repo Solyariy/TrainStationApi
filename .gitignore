@@ -1,3 +1,19 @@
+**__pycache__/
+.venv
+.env
+.idea
+.DS-Store
+
+
+
+
+
+
+
+
+
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
