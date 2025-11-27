@@ -4,7 +4,44 @@ from rest_framework.exceptions import ValidationError
 from railroad.models import (
     Route,
     Station,
+    Train,
+    TrainType,
 )
+
+
+class TrainTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TrainType
+        fields = "__all__"
+
+
+class TrainSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Train
+        fields = "__all__"
+
+
+class TrainDetailSerializer(serializers.ModelSerializer):
+    train_type_info = TrainTypeSerializer(
+        source="train_type",
+        read_only=True
+    )
+
+    class Meta:
+        model = Train
+        fields = "__all__"
+        extra_kwargs = {
+            "train_type": {"write_only": True}
+        }
+
+class TrainListSerializer(serializers.ModelSerializer):
+    train_type = serializers.CharField(
+        source="train_type.name"
+    )
+
+    class Meta:
+        model = Train
+        fields = "__all__"
 
 
 class StationSerializer(serializers.ModelSerializer):

@@ -3,6 +3,28 @@ from django.db.models import F, Q
 from rest_framework import status
 
 
+class TrainType(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Train(models.Model):
+    name = models.CharField(max_length=255)
+    cargo_num = models.IntegerField()
+    places_in_cargo = models.IntegerField()
+    train_type = models.ForeignKey(
+        TrainType,
+        on_delete=models.SET_NULL,
+        related_name="trains",
+        null=True,
+    )
+
+    def __str__(self):
+        return f"{self.train_type} | {self.name}"
+
+
 class Station(models.Model):
     name = models.CharField(max_length=255, unique=True)
     latitude = models.FloatField()
@@ -14,7 +36,7 @@ class Station(models.Model):
                 fields=("latitude", "longitude"),
                 name="unique_all_stations",
                 violation_error_code=status.HTTP_400_BAD_REQUEST,
-                violation_error_message="Such Station already exists"
+                violation_error_message="Such Station already exists",
             ),
         ]
 
