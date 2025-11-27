@@ -1,0 +1,56 @@
+[
+  {
+    "model": "railroad.station",
+    "pk": 1,
+    "fields": {
+      "name": "Central Station",
+      "latitude": 40.7128,
+      "longitude": -74.0060
+    }
+  },
+  {
+    "model": "railroad.station",
+    "pk": 2,
+    "fields": {
+      "name": "North Terminal",
+      "latitude": 40.7580,
+      "longitude": -73.9855
+    }
+  },
+  {
+    "model": "railroad.station",
+    "pk": 3,
+    "fields": {
+      "name": "West Side Hub",
+      "latitude": 40.7484,
+      "longitude": -73.9857
+    }
+  },
+  {
+    "model": "railroad.route",
+    "pk": 1,
+    "fields": {
+      "source": 1,
+      "destination": 2,
+      "distance": 15
+    }
+  },
+  {
+    "model": "railroad.route",
+    "pk": 2,
+    "fields": {
+      "source": 2,
+      "destination": 3,
+      "distance": 8
+    }
+  },
+  {
+    "model": "railroad.route",
+    "pk": 3,
+    "fields": {
+      "source": 3,
+      "destination": 1,
+      "distance": 12
+    }
+  }
+]
