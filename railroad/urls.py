@@ -5,7 +5,7 @@ from railroad.views import (
     RouteViewSet,
     StationViewSet,
     TrainTypeViewSet,
-    TrainViewSet,
+    TrainViewSet, CrewViewSet, OrderViewSet, JourneyViewSet,
 )
 
 router = DefaultRouter()
@@ -13,6 +13,9 @@ router.register("stations", StationViewSet)
 router.register("routes", RouteViewSet)
 router.register("trains/types", TrainTypeViewSet)
 router.register("trains", TrainViewSet)
+router.register("crew", CrewViewSet)
+router.register("orders", OrderViewSet)
+router.register("journeys", JourneyViewSet)
 
 app_name = "railroad"
 

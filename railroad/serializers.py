@@ -5,8 +5,27 @@ from railroad.models import (
     Route,
     Station,
     Train,
-    TrainType,
+    TrainType, Crew, Order, Journey,
 )
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = "__all__"
+        extra_kwargs = {
+            "created_at": {"read_only": True}
+        }
+
+
+class CrewSerializer(serializers.ModelSerializer):
+    full_name = serializers.CharField(
+        read_only=True
+    )
+
+    class Meta:
+        model = Crew
+        fields = "__all__"
 
 
 class TrainTypeSerializer(serializers.ModelSerializer):
@@ -29,10 +48,8 @@ class TrainDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Train
-        fields = "__all__"
-        extra_kwargs = {
-            "train_type": {"write_only": True}
-        }
+        exclude = ("train_type",)
+
 
 class TrainListSerializer(serializers.ModelSerializer):
     train_type = serializers.CharField(
@@ -64,6 +81,19 @@ class RouteSerializer(serializers.ModelSerializer):
         return super().validate(attrs)
 
 
+class RouteDetailSerializer(serializers.ModelSerializer):
+    source = StationSerializer(
+        read_only=True
+    )
+    destination = StationSerializer(
+        read_only=True
+    )
+
+    class Meta:
+        model = Route
+        fields = "__all__"
+
+
 class RouteListSerializer(serializers.ModelSerializer):
     source_station = serializers.CharField(
         source="source.name"
@@ -75,3 +105,18 @@ class RouteListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Route
         exclude = ("source", "destination")
+
+
+class JourneySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Journey
+        fields = "__all__"
+
+
+class JourneyListSerializer:
+    route = serializers.CharField()
+    train = serializers.CharField()
+
+    class Meta:
+        model = Journey
+        fields = "__all__"
