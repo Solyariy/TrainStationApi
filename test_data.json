@@ -1,29 +1,54 @@
 [
   {
+    "model": "user.user",
+    "pk": 1,
+    "fields": {
+      "username": "johndoe",
+      "first_name": "John",
+      "last_name": "Doe",
+      "email": "john@example.com",
+      "password": "pbkdf2_sha256$260000$..."
+    }
+  },
+  {
     "model": "railroad.station",
     "pk": 1,
     "fields": {
-      "name": "Central Station",
-      "latitude": 40.7128,
-      "longitude": -74.0060
+      "name": "Kyiv-Pasazhyrskyi",
+      "latitude": 50.4402,
+      "longitude": 30.4897
     }
   },
   {
     "model": "railroad.station",
     "pk": 2,
     "fields": {
-      "name": "North Terminal",
-      "latitude": 40.7580,
-      "longitude": -73.9855
+      "name": "Lviv-Holovnyi",
+      "latitude": 49.8397,
+      "longitude": 24.0297
     }
   },
   {
     "model": "railroad.station",
     "pk": 3,
     "fields": {
-      "name": "West Side Hub",
-      "latitude": 40.7484,
-      "longitude": -73.9857
+      "name": "Odesa-Holovna",
+      "latitude": 46.4694,
+      "longitude": 30.7411
+    }
+  },
+  {
+    "model": "railroad.traintype",
+    "pk": 1,
+    "fields": {
+      "name": "Intercity+"
+    }
+  },
+  {
+    "model": "railroad.traintype",
+    "pk": 2,
+    "fields": {
+      "name": "Night Express"
     }
   },
   {
@@ -32,7 +57,7 @@
     "fields": {
       "source": 1,
       "destination": 2,
-      "distance": 15
+      "distance": 541
     }
   },
   {
@@ -41,16 +66,93 @@
     "fields": {
       "source": 2,
       "destination": 3,
-      "distance": 8
+      "distance": 790
     }
   },
   {
-    "model": "railroad.route",
-    "pk": 3,
+    "model": "railroad.train",
+    "pk": 1,
     "fields": {
-      "source": 3,
-      "destination": 1,
-      "distance": 12
+      "name": "Hyundai Rotem HRCS2",
+      "cargo_num": 9,
+      "places_in_cargo": 60,
+      "train_type": 1
+    }
+  },
+  {
+    "model": "railroad.train",
+    "pk": 2,
+    "fields": {
+      "name": "Tarpan EKr1",
+      "cargo_num": 12,
+      "places_in_cargo": 50,
+      "train_type": 2
+    }
+  },
+  {
+    "model": "railroad.journey",
+    "pk": 1,
+    "fields": {
+      "route": 1,
+      "train": 1,
+      "departure_time": "2025-12-01T06:00:00Z",
+      "arrival_time": "2025-12-01T11:30:00Z"
+    }
+  },
+  {
+    "model": "railroad.journey",
+    "pk": 2,
+    "fields": {
+      "route": 2,
+      "train": 2,
+      "departure_time": "2025-12-02T22:00:00Z",
+      "arrival_time": "2025-12-03T08:00:00Z"
+    }
+  },
+  {
+    "model": "railroad.order",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "created_at": "2025-11-28T10:00:00Z"
+    }
+  },
+  {
+    "model": "railroad.ticket",
+    "pk": 1,
+    "fields": {
+      "cargo": 1,
+      "seat": 15,
+      "journey": 1,
+      "order": 1
+    }
+  },
+  {
+    "model": "railroad.ticket",
+    "pk": 2,
+    "fields": {
+      "cargo": 1,
+      "seat": 16,
+      "journey": 1,
+      "order": 1
+    }
+  },
+  {
+    "model": "railroad.crew",
+    "pk": 1,
+    "fields": {
+      "first_name": "Ivan",
+      "last_name": "Petrenko",
+      "journey": 1
+    }
+  },
+  {
+    "model": "railroad.crew",
+    "pk": 2,
+    "fields": {
+      "first_name": "Maria",
+      "last_name": "Kovalenko",
+      "journey": 2
     }
   }
 ]

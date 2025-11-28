@@ -7,6 +7,7 @@ from railroad.views import (
     OrderViewSet,
     RouteViewSet,
     StationViewSet,
+    TicketViewSet,
     TrainTypeViewSet,
     TrainViewSet,
 )
@@ -19,6 +20,7 @@ router.register("trains", TrainViewSet)
 router.register("crew", CrewViewSet)
 router.register("orders", OrderViewSet)
 router.register("journeys", JourneyViewSet)
+router.register("tickets", TicketViewSet)
 
 app_name = "railroad"
 

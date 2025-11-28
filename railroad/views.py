@@ -1,4 +1,7 @@
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import (
+    ModelViewSet,
+    ReadOnlyModelViewSet,
+)
 
 from railroad.models import (
     Crew,
@@ -6,11 +9,14 @@ from railroad.models import (
     Order,
     Route,
     Station,
+    Ticket,
     Train,
     TrainType,
 )
 from railroad.serializers import (
+    CrewDetailSerializer,
     CrewSerializer,
+    JourneyDetailSerializer,
     JourneyListSerializer,
     JourneySerializer,
     OrderSerializer,
@@ -18,18 +24,34 @@ from railroad.serializers import (
     RouteListSerializer,
     RouteSerializer,
     StationSerializer,
+    TicketDetailSerializer,
+    TicketListSerializer,
     TrainDetailSerializer,
     TrainListSerializer,
     TrainSerializer,
-    TrainTypeSerializer, CrewDetailSerializer, JourneyDetailSerializer,
+    TrainTypeSerializer,
 )
+
+
+class TicketViewSet(ReadOnlyModelViewSet):
+    queryset = Ticket.objects.select_related(
+        "journey__route__source",
+        "journey__route__destination",
+        "journey__train__train_type",
+        "order__user",
+    )
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return TicketListSerializer
+        return TicketDetailSerializer
 
 
 class JourneyViewSet(ModelViewSet):
     queryset = Journey.objects.select_related(
         "route__source",
         "route__destination",
-        "train__train_type"
+        "train__train_type",
     )
 
     def get_serializer_class(self):
@@ -41,8 +63,10 @@ class JourneyViewSet(ModelViewSet):
 
 
 class OrderViewSet(ModelViewSet):
+    queryset = Order.objects.select_related(
+        "user"
+    ).prefetch_related("tickets")
     serializer_class = OrderSerializer
-    queryset = Order.objects.select_related("user")
 
 
 class CrewViewSet(ModelViewSet):
@@ -53,7 +77,7 @@ class CrewViewSet(ModelViewSet):
             return self.queryset.select_related(
                 "journey__route__source",
                 "journey__route__destination",
-                "journey__train__train_type"
+                "journey__train__train_type",
             )
         return self.queryset.all()
 
