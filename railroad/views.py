@@ -1,4 +1,3 @@
-from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet
 
 from railroad.models import (
@@ -22,27 +21,46 @@ from railroad.serializers import (
     TrainDetailSerializer,
     TrainListSerializer,
     TrainSerializer,
-    TrainTypeSerializer,
+    TrainTypeSerializer, CrewDetailSerializer, JourneyDetailSerializer,
 )
 
 
 class JourneyViewSet(ModelViewSet):
-    queryset = Journey.objects.all()
+    queryset = Journey.objects.select_related(
+        "route__source",
+        "route__destination",
+        "train__train_type"
+    )
 
     def get_serializer_class(self):
         if self.action == "list":
             return JourneyListSerializer
+        if self.action == "retrieve":
+            return JourneyDetailSerializer
         return JourneySerializer
 
 
 class OrderViewSet(ModelViewSet):
     serializer_class = OrderSerializer
-    queryset = Order.objects.all()
+    queryset = Order.objects.select_related("user")
 
 
 class CrewViewSet(ModelViewSet):
-    serializer_class = CrewSerializer
-    queryset = Crew.objects.all()
+    queryset = Crew.objects
+
+    def get_queryset(self):
+        if self.action == "retrieve":
+            return self.queryset.select_related(
+                "journey__route__source",
+                "journey__route__destination",
+                "journey__train__train_type"
+            )
+        return self.queryset.all()
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return CrewDetailSerializer
+        return CrewSerializer
 
 
 class TrainTypeViewSet(ModelViewSet):

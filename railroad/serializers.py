@@ -19,14 +19,6 @@ class OrderSerializer(serializers.ModelSerializer):
         extra_kwargs = {"created_at": {"read_only": True}}
 
 
-class CrewSerializer(serializers.ModelSerializer):
-    full_name = serializers.CharField(read_only=True)
-
-    class Meta:
-        model = Crew
-        fields = "__all__"
-
-
 class TrainTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = TrainType
@@ -114,3 +106,37 @@ class JourneyListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Journey
         fields = "__all__"
+
+
+class JourneyDetailSerializer(serializers.ModelSerializer):
+    route = RouteDetailSerializer(
+        read_only=True
+    )
+    train = TrainDetailSerializer(
+        read_only=True
+    )
+
+    class Meta:
+        model = Journey
+        fields = "__all__"
+
+
+class CrewSerializer(serializers.ModelSerializer):
+    full_name = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = Crew
+        fields = "__all__"
+
+
+class CrewDetailSerializer(serializers.ModelSerializer):
+    journey = JourneyDetailSerializer(
+        read_only=True
+    )
+
+    class Meta:
+        model = Crew
+        fields = ("id", "first_name", "last_name", "full_name", "journey")
+        extra_kwargs = {
+            "full_name": {"read_only": True}
+        }
