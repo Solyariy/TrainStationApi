@@ -6,14 +6,17 @@ from app import settings
 
 
 class Journey(models.Model):
-    route = models.ForeignKey("Route", on_delete=models.SET_NULL, null=True)
-    train = models.ForeignKey("Train", on_delete=models.SET_NULL, null=True)
+    route = models.ForeignKey(
+        "Route", on_delete=models.SET_NULL, null=True
+    )
+    train = models.ForeignKey(
+        "Train", on_delete=models.SET_NULL, null=True
+    )
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField()
 
     def __str__(self):
         return f"{self.route} | {self.departure_time} -> {self.arrival_time}"
-
 
 
 # class Ticket(models.Model):
@@ -29,11 +32,15 @@ class Order(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="orders"
+        related_name="orders",
     )
 
     def __str__(self):
-        return self.user.get_full_name() + " " + self.created_at
+        return (
+            self.user.get_full_name()
+            + " "
+            + self.created_at
+        )
 
 
 class Crew(models.Model):

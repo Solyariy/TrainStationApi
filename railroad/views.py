@@ -2,19 +2,27 @@ from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet
 
 from railroad.models import (
+    Crew,
+    Journey,
+    Order,
     Route,
     Station,
     Train,
-    TrainType, Crew, Order, Journey,
+    TrainType,
 )
 from railroad.serializers import (
+    CrewSerializer,
+    JourneyListSerializer,
+    JourneySerializer,
+    OrderSerializer,
+    RouteDetailSerializer,
     RouteListSerializer,
     RouteSerializer,
     StationSerializer,
+    TrainDetailSerializer,
     TrainListSerializer,
     TrainSerializer,
-    TrainTypeSerializer, TrainDetailSerializer, RouteDetailSerializer, CrewSerializer, OrderSerializer,
-    JourneySerializer, JourneyListSerializer
+    TrainTypeSerializer,
 )
 
 

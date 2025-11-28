@@ -2,10 +2,13 @@ from rest_framework import serializers, status
 from rest_framework.exceptions import ValidationError
 
 from railroad.models import (
+    Crew,
+    Journey,
+    Order,
     Route,
     Station,
     Train,
-    TrainType, Crew, Order, Journey,
+    TrainType,
 )
 
 
@@ -13,15 +16,11 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = "__all__"
-        extra_kwargs = {
-            "created_at": {"read_only": True}
-        }
+        extra_kwargs = {"created_at": {"read_only": True}}
 
 
 class CrewSerializer(serializers.ModelSerializer):
-    full_name = serializers.CharField(
-        read_only=True
-    )
+    full_name = serializers.CharField(read_only=True)
 
     class Meta:
         model = Crew
@@ -42,8 +41,7 @@ class TrainSerializer(serializers.ModelSerializer):
 
 class TrainDetailSerializer(serializers.ModelSerializer):
     train_type_info = TrainTypeSerializer(
-        source="train_type",
-        read_only=True
+        source="train_type", read_only=True
     )
 
     class Meta:
@@ -82,12 +80,8 @@ class RouteSerializer(serializers.ModelSerializer):
 
 
 class RouteDetailSerializer(serializers.ModelSerializer):
-    source = StationSerializer(
-        read_only=True
-    )
-    destination = StationSerializer(
-        read_only=True
-    )
+    source = StationSerializer(read_only=True)
+    destination = StationSerializer(read_only=True)
 
     class Meta:
         model = Route
@@ -113,7 +107,7 @@ class JourneySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class JourneyListSerializer:
+class JourneyListSerializer(serializers.ModelSerializer):
     route = serializers.CharField()
     train = serializers.CharField()
 

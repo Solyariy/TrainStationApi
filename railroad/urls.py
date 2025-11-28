@@ -2,10 +2,13 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from railroad.views import (
+    CrewViewSet,
+    JourneyViewSet,
+    OrderViewSet,
     RouteViewSet,
     StationViewSet,
     TrainTypeViewSet,
-    TrainViewSet, CrewViewSet, OrderViewSet, JourneyViewSet,
+    TrainViewSet,
 )
 
 router = DefaultRouter()
