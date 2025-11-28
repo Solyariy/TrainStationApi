@@ -2,7 +2,7 @@ from rest_framework.viewsets import (
     ModelViewSet,
     ReadOnlyModelViewSet,
 )
-
+from railroad.filters import JourneyFilter
 from railroad.models import (
     Crew,
     Journey,
@@ -48,6 +48,7 @@ class TicketViewSet(ReadOnlyModelViewSet):
 
 
 class JourneyViewSet(ModelViewSet):
+    filterset_class = JourneyFilter
     queryset = Journey.objects.select_related(
         "route__source",
         "route__destination",

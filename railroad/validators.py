@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
 # available tickets
-# places_in_cargo > ticket.seat
 # train is free at the time of journey
 # crew is free at the journey dates
 
