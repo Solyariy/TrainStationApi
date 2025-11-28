@@ -2,6 +2,7 @@ from django.db import transaction
 from rest_framework import serializers, status
 from rest_framework.exceptions import ValidationError
 
+from railroad import validators
 from railroad.models import (
     Crew,
     Journey,
@@ -89,27 +90,21 @@ class RouteListSerializer(serializers.ModelSerializer):
 
 
 class JourneySerializer(serializers.ModelSerializer):
+    total_time_hr = serializers.FloatField(read_only=True)
+
     class Meta:
         model = Journey
         fields = "__all__"
 
 
-class JourneyListSerializer(serializers.ModelSerializer):
+class JourneyListSerializer(JourneySerializer):
     route = serializers.CharField()
     train = serializers.CharField()
 
-    class Meta:
-        model = Journey
-        fields = "__all__"
 
-
-class JourneyDetailSerializer(serializers.ModelSerializer):
+class JourneyDetailSerializer(JourneySerializer):
     route = RouteDetailSerializer(read_only=True)
     train = TrainDetailSerializer(read_only=True)
-
-    class Meta:
-        model = Journey
-        fields = "__all__"
 
 
 class CrewSerializer(serializers.ModelSerializer):
@@ -144,10 +139,21 @@ class TicketSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     tickets = TicketSerializer(many=True)
 
+    # user = serializers.HiddenField(
+    #     default=serializers.CurrentUserDefault()
+    # )
     class Meta:
         model = Order
         fields = "__all__"
         extra_kwargs = {"created_at": {"read_only": True}}
+
+    def validate(self, attrs):
+        data = super(
+            serializers.ModelSerializer, self
+        ).validate(attrs)
+        val = validators.OrderValidator(attrs)
+        val.validate()
+        return data
 
     def create(self, validated_data):
         tickets_data = validated_data.pop("tickets")

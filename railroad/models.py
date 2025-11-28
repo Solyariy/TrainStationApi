@@ -1,3 +1,4 @@
+from django.core import validators
 from django.db import models
 from django.db.models import F, Q
 from rest_framework import status
@@ -21,13 +22,20 @@ class Journey(models.Model):
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField()
 
+    @property
+    def total_time_hr(self):
+        return round((
+            self.arrival_time.timestamp()
+            - self.departure_time.timestamp()
+        ) / 3600, 2)
+
     def __str__(self):
         return f"{self.route} | {self.departure_time} -> {self.arrival_time}"
 
 
 class Order(models.Model):
     created_at = models.DateTimeField(
-        auto_now_add=True,
+        auto_now_add=True, editable=False
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -56,6 +64,19 @@ class Ticket(models.Model):
         on_delete=models.CASCADE,
         related_name="tickets",
     )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=(
+                    "cargo",
+                    "seat",
+                    "journey_id",
+                    "order_id",
+                ),
+                name="unique_every_ticket",
+            )
+        ]
 
 
 class Crew(models.Model):
@@ -127,7 +148,10 @@ class Route(models.Model):
         on_delete=models.CASCADE,
         related_name="destined_routes",
     )
-    distance = models.IntegerField(null=True)
+    distance = models.IntegerField(
+        null=True,
+        validators=[validators.MinValueValidator(0)],
+    )
 
     class Meta:
         constraints = [
