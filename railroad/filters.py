@@ -34,11 +34,13 @@ class JourneyFilter(filters.FilterSet):
     class Meta:
         model = Journey
         fields = (
-            "arrival_time",
-            "departure_time",
-            "route__destination",
-            "route__source",
-            "train__train_type",
+            "departure_after",
+            "departure_before",
+            "arrival_after",
+            "arrival_before",
+            "destination",
+            "source",
+            "train_type",
         )
 
 
@@ -50,7 +52,7 @@ class TrainFilter(filters.FilterSet):
 
     class Meta:
         model = Train
-        fields = ("train_type",)
+        fields = ("type",)
 
 
 class CrewFilter(filters.FilterSet):

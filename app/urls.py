@@ -38,17 +38,17 @@ urlpatterns = [
         include("user.urls", namespace="user"),
     ),
     path(
-        "api/schema/",
+        "api/v1/schema/",
         SpectacularAPIView.as_view(),
         name="schema",
     ),
     path(
-        "api/schema/swagger-ui/",
+        "api/v1/schema/swagger-ui/",
         SpectacularSwaggerView.as_view(url_name="schema"),
         name="swagger-ui",
     ),
     path(
-        "api/schema/redoc/",
+        "api/v1/schema/redoc/",
         SpectacularRedocView.as_view(url_name="schema"),
         name="redoc",
     ),
