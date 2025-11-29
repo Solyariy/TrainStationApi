@@ -24,7 +24,7 @@ class TrainTypeSerializer(serializers.ModelSerializer):
 class TrainSerializer(serializers.ModelSerializer):
     class Meta:
         model = Train
-        fields = "__all__"
+        exclude = ("train_type",)
 
 
 class TrainDetailSerializer(serializers.ModelSerializer):
@@ -35,7 +35,7 @@ class TrainDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Train
-        exclude = ("train_type",)
+        fields = "__all__"
 
 
 class TrainListSerializer(serializers.ModelSerializer):
@@ -49,10 +49,28 @@ class TrainListSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class TrainImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Train
+        fields = ("id", "image")
+
+
 class StationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Station
+        exclude = ("image",)
+
+
+class StationListDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Station
         fields = "__all__"
+
+
+class StationImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Station
+        fields = ("id", "image")
 
 
 class RouteSerializer(serializers.ModelSerializer):
@@ -119,6 +137,14 @@ class CrewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Crew
+        exclude = ("image",)
+
+
+class CrewListSerializer(serializers.ModelSerializer):
+    full_name = serializers.CharField(read_only=True)
+
+    class Meta:
+        model = Crew
         fields = "__all__"
 
 
@@ -132,9 +158,16 @@ class CrewDetailSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "full_name",
+            "image",
             "journey",
         )
         extra_kwargs = {"full_name": {"read_only": True}}
+
+
+class CrewImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Crew
+        fields = ("id", "image")
 
 
 class TicketSerializer(serializers.ModelSerializer):

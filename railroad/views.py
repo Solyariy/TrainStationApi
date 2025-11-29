@@ -1,3 +1,6 @@
+from rest_framework import status
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from rest_framework.viewsets import (
     ModelViewSet,
     ReadOnlyModelViewSet,
@@ -30,7 +33,8 @@ from railroad.serializers import (
     TrainDetailSerializer,
     TrainListSerializer,
     TrainSerializer,
-    TrainTypeSerializer,
+    TrainTypeSerializer, CrewImageSerializer, CrewListSerializer, TrainImageSerializer, StationImageSerializer,
+    StationListDetailSerializer,
 )
 
 
@@ -70,6 +74,9 @@ class OrderViewSet(ModelViewSet):
     ).prefetch_related("tickets")
     serializer_class = OrderSerializer
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
 
 class CrewViewSet(ModelViewSet):
     queryset = Crew.objects
@@ -86,7 +93,23 @@ class CrewViewSet(ModelViewSet):
     def get_serializer_class(self):
         if self.action == "retrieve":
             return CrewDetailSerializer
+        if self.action == "list":
+            return CrewListSerializer
+        if self.action == "upload_image":
+            return CrewImageSerializer
         return CrewSerializer
+
+    @action(
+        methods=["POST"],
+        url_path="upload-image",
+        detail=True
+    )
+    def upload_image(self, request, pk=None):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class TrainTypeViewSet(ModelViewSet):
@@ -103,12 +126,44 @@ class TrainViewSet(ModelViewSet):
             return TrainListSerializer
         if self.action == "retrieve":
             return TrainDetailSerializer
+        if self.action == "upload_image":
+            return TrainImageSerializer
         return TrainSerializer
+
+    @action(
+        methods=["POST"],
+        url_path="upload-image",
+        detail=True
+    )
+    def upload_image(self, request, pk=None):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class StationViewSet(ModelViewSet):
-    serializer_class = StationSerializer
     queryset = Station.objects.all()
+
+    def get_serializer_class(self):
+        if self.action == "upload_image":
+            return StationImageSerializer
+        if self.action in ("list", "retrieve"):
+            return StationListDetailSerializer
+        return StationSerializer
+
+    @action(
+        methods=["POST"],
+        url_path="upload-image",
+        detail=True
+    )
+    def upload_image(self, request, pk=None):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class RouteViewSet(ModelViewSet):
