@@ -25,5 +25,9 @@ urlpatterns = [
         "api/v1/railroad/",
         include("railroad.urls", namespace="railroad"),
     ),
+    path(
+        "api/v1/user/",
+        include("user.urls", namespace="user")
+    ),
     *debug_toolbar_urls(),
 ]
