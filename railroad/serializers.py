@@ -188,7 +188,6 @@ class TicketListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
         fields = "__all__"
-        ordering = "-journey__departure_time"
 
 
 class TicketDetailSerializer(serializers.ModelSerializer):
