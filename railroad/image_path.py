@@ -1,6 +1,7 @@
 import os
 import uuid
 from pathlib import Path
+
 from django.utils.text import slugify
 
 
@@ -10,5 +11,5 @@ def path_to_media(instance, filename: str):
     return os.path.join(
         "uploads",
         instance.__class__.__name__.lower(),
-        filepath
+        filepath,
     )
