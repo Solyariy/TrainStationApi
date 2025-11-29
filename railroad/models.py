@@ -88,6 +88,7 @@ class Ticket(models.Model):
                 name="unique_every_ticket",
             )
         ]
+        ordering = ("journey__departure_time",)
 
 
 class Crew(models.Model):
