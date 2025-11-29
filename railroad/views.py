@@ -2,7 +2,7 @@ from rest_framework.viewsets import (
     ModelViewSet,
     ReadOnlyModelViewSet,
 )
-from railroad.filters import JourneyFilter
+from railroad.filters import JourneyFilter, TrainFilter
 from railroad.models import (
     Crew,
     Journey,
@@ -94,6 +94,7 @@ class TrainTypeViewSet(ModelViewSet):
 
 
 class TrainViewSet(ModelViewSet):
+    filterset_class = TrainFilter
     queryset = Train.objects.select_related("train_type")
 
     def get_serializer_class(self):

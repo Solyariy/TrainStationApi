@@ -31,6 +31,7 @@ class TrainDetailSerializer(serializers.ModelSerializer):
     train_type_info = TrainTypeSerializer(
         source="train_type", read_only=True
     )
+    total_seats = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Train
@@ -41,6 +42,7 @@ class TrainListSerializer(serializers.ModelSerializer):
     train_type = serializers.CharField(
         source="train_type.name"
     )
+    total_seats = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Train
@@ -96,10 +98,20 @@ class JourneySerializer(serializers.ModelSerializer):
         model = Journey
         fields = "__all__"
 
+    def validate(self, attrs):
+        data = super(
+            serializers.ModelSerializer, self
+        ).validate(attrs)
+        val = validators.JourneyValidator(attrs)
+        val.validate()
+        return data
+
 
 class JourneyListSerializer(JourneySerializer):
-    route = serializers.CharField()
-    train = serializers.CharField()
+    route = serializers.CharField(read_only=True)
+    train = serializers.CharField(read_only=True)
+    taken_seats = serializers.IntegerField(read_only=True)
+    free_seats = serializers.IntegerField(read_only=True)
 
 
 class JourneyDetailSerializer(JourneySerializer):
@@ -176,6 +188,7 @@ class TicketListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
         fields = "__all__"
+        ordering = "-journey__departure_time"
 
 
 class TicketDetailSerializer(serializers.ModelSerializer):

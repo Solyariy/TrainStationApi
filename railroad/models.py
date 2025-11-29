@@ -24,10 +24,22 @@ class Journey(models.Model):
 
     @property
     def total_time_hr(self):
-        return round((
-            self.arrival_time.timestamp()
-            - self.departure_time.timestamp()
-        ) / 3600, 2)
+        return round(
+            (
+                self.arrival_time.timestamp()
+                - self.departure_time.timestamp()
+            )
+            / 3600,
+            2,
+        )
+
+    @property
+    def taken_seats(self):
+        return self.tickets.count()
+
+    @property
+    def free_seats(self):
+        return self.train.total_seats - self.taken_seats
 
     def __str__(self):
         return f"{self.route} | {self.departure_time} -> {self.arrival_time}"
@@ -72,7 +84,6 @@ class Ticket(models.Model):
                     "cargo",
                     "seat",
                     "journey_id",
-                    "order_id",
                 ),
                 name="unique_every_ticket",
             )
@@ -113,6 +124,10 @@ class Train(models.Model):
         related_name="trains",
         null=True,
     )
+
+    @property
+    def total_seats(self):
+        return self.cargo_num * self.places_in_cargo
 
     def __str__(self):
         return f"{self.train_type} | {self.name}"
