@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 
-from railroad.models import Journey, Train
+from railroad.models import Journey, Train, Crew
 
 
 class JourneyFilter(filters.FilterSet):
@@ -43,7 +43,7 @@ class JourneyFilter(filters.FilterSet):
 
 
 class TrainFilter(filters.FilterSet):
-    types = filters.CharFilter(
+    type = filters.CharFilter(
         field_name="train_type__name",
         lookup_expr="icontains",
     )
@@ -51,3 +51,18 @@ class TrainFilter(filters.FilterSet):
     class Meta:
         model = Train
         fields = ("train_type",)
+
+
+class CrewFilter(filters.FilterSet):
+    first_name = filters.CharFilter(
+        field_name="first_name",
+        lookup_expr="icontains",
+    )
+    last_name = filters.CharFilter(
+        field_name="last_name",
+        lookup_expr="icontains",
+    )
+
+    class Meta:
+        model = Crew
+        fields = ("first_name", "last_name", "journey")

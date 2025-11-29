@@ -27,8 +27,8 @@ class Journey(models.Model):
     def total_time_hr(self):
         return round(
             (
-                    self.arrival_time.timestamp()
-                    - self.departure_time.timestamp()
+                self.arrival_time.timestamp()
+                - self.departure_time.timestamp()
             )
             / 3600,
             2,
@@ -58,9 +58,9 @@ class Order(models.Model):
 
     def __str__(self):
         return (
-                self.user.get_full_name()
-                + " "
-                + str(self.created_at)
+            self.user.get_full_name()
+            + " "
+            + str(self.created_at)
         )
 
 
@@ -104,8 +104,7 @@ class Crew(models.Model):
         related_name="crew",
     )
     image = models.ImageField(
-        upload_to=path_to_media,
-        null=True
+        upload_to=path_to_media, null=True
     )
 
     @property
@@ -134,8 +133,7 @@ class Train(models.Model):
         null=True,
     )
     image = models.ImageField(
-        upload_to=path_to_media,
-        null=True
+        upload_to=path_to_media, null=True
     )
 
     @property
@@ -151,8 +149,7 @@ class Station(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
     image = models.ImageField(
-        upload_to=path_to_media,
-        null=True
+        upload_to=path_to_media, null=True
     )
 
     class Meta:

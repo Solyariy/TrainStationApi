@@ -61,7 +61,9 @@ class StationSerializer(serializers.ModelSerializer):
         exclude = ("image",)
 
 
-class StationListDetailSerializer(serializers.ModelSerializer):
+class StationListDetailSerializer(
+    serializers.ModelSerializer
+):
     class Meta:
         model = Station
         fields = "__all__"

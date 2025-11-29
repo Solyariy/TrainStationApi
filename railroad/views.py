@@ -5,8 +5,9 @@ from rest_framework.viewsets import (
     ModelViewSet,
     ReadOnlyModelViewSet,
 )
-
-from railroad.filters import JourneyFilter, TrainFilter
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, extend_schema_view
+from railroad.filters import JourneyFilter, TrainFilter, CrewFilter
 from railroad.models import (
     Crew,
     Journey,
@@ -19,6 +20,8 @@ from railroad.models import (
 )
 from railroad.serializers import (
     CrewDetailSerializer,
+    CrewImageSerializer,
+    CrewListSerializer,
     CrewSerializer,
     JourneyDetailSerializer,
     JourneyListSerializer,
@@ -27,14 +30,16 @@ from railroad.serializers import (
     RouteDetailSerializer,
     RouteListSerializer,
     RouteSerializer,
+    StationImageSerializer,
+    StationListDetailSerializer,
     StationSerializer,
     TicketDetailSerializer,
     TicketListSerializer,
     TrainDetailSerializer,
+    TrainImageSerializer,
     TrainListSerializer,
     TrainSerializer,
-    TrainTypeSerializer, CrewImageSerializer, CrewListSerializer, TrainImageSerializer, StationImageSerializer,
-    StationListDetailSerializer,
+    TrainTypeSerializer,
 )
 
 
@@ -52,6 +57,47 @@ class TicketViewSet(ReadOnlyModelViewSet):
         return TicketDetailSerializer
 
 
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="departure_after",
+                type=OpenApiTypes.DATETIME,
+                description="Returns journeys with departure after specified time"
+            ),
+            OpenApiParameter(
+                name="departure_before",
+                type=OpenApiTypes.DATETIME,
+                description="Returns journeys with departure before specified time"
+            ),
+            OpenApiParameter(
+                name="arrival_after",
+                type=OpenApiTypes.DATETIME,
+                description="Returns journeys with arrival after specified time"
+            ),
+            OpenApiParameter(
+                name="arrival_before",
+                type=OpenApiTypes.DATETIME,
+                description="Returns journeys with arrival before specified time"
+            ),
+            OpenApiParameter(
+                name="destination",
+                type=OpenApiTypes.STR,
+                description="Filter journeys by destination"
+            ),
+            OpenApiParameter(
+                name="source",
+                type=OpenApiTypes.STR,
+                description="Filter journeys by source"
+            ),
+            OpenApiParameter(
+                name="train_type",
+                type=OpenApiTypes.STR,
+                description="Filter journeys by train type"
+            )
+        ],
+    )
+)
 class JourneyViewSet(ModelViewSet):
     filterset_class = JourneyFilter
     queryset = Journey.objects.select_related(
@@ -78,7 +124,29 @@ class OrderViewSet(ModelViewSet):
         serializer.save(user=self.request.user)
 
 
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="first_name",
+                type=OpenApiTypes.STR,
+                description="Filter crew by first name"
+            ),
+            OpenApiParameter(
+                name="last_name",
+                type=OpenApiTypes.STR,
+                description="Filter crew by last name"
+            ),
+            OpenApiParameter(
+                name="journey",
+                type=OpenApiTypes.INT,
+                description="Returns crew of specific journey"
+            ),
+        ]
+    )
+)
 class CrewViewSet(ModelViewSet):
+    filterset_class = CrewFilter
     queryset = Crew.objects
 
     def get_queryset(self):
@@ -102,14 +170,18 @@ class CrewViewSet(ModelViewSet):
     @action(
         methods=["POST"],
         url_path="upload-image",
-        detail=True
+        detail=True,
     )
     def upload_image(self, request, pk=None):
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data)
+        serializer = self.get_serializer(
+            instance, data=request.data
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(
+            serializer.data, status=status.HTTP_200_OK
+        )
 
 
 class TrainTypeViewSet(ModelViewSet):
@@ -117,6 +189,17 @@ class TrainTypeViewSet(ModelViewSet):
     queryset = TrainType.objects.all()
 
 
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="type",
+                type=OpenApiTypes.STR,
+                description="Filter trains by their types"
+            )
+        ],
+    )
+)
 class TrainViewSet(ModelViewSet):
     filterset_class = TrainFilter
     queryset = Train.objects.select_related("train_type")
@@ -133,14 +216,18 @@ class TrainViewSet(ModelViewSet):
     @action(
         methods=["POST"],
         url_path="upload-image",
-        detail=True
+        detail=True,
     )
     def upload_image(self, request, pk=None):
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data)
+        serializer = self.get_serializer(
+            instance, data=request.data
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(
+            serializer.data, status=status.HTTP_200_OK
+        )
 
 
 class StationViewSet(ModelViewSet):
@@ -156,14 +243,18 @@ class StationViewSet(ModelViewSet):
     @action(
         methods=["POST"],
         url_path="upload-image",
-        detail=True
+        detail=True,
     )
     def upload_image(self, request, pk=None):
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data)
+        serializer = self.get_serializer(
+            instance, data=request.data
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(
+            serializer.data, status=status.HTTP_200_OK
+        )
 
 
 class RouteViewSet(ModelViewSet):
