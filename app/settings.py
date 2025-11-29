@@ -63,7 +63,11 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PERMISSION_CLASSES": (
         "user.permissions.IsStaffOrIfAuthenticatedReadOnly",
-    )
+    ),
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "10/min",
+        "user": "40/min"
+    }
 }
 
 MIDDLEWARE = [
