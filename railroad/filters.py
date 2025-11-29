@@ -28,7 +28,7 @@ class JourneyFilter(filters.FilterSet):
     )
     train_type = filters.CharFilter(
         field_name="train__train_type__name",
-        lookup_expr="icontains"
+        lookup_expr="icontains",
     )
 
     class Meta:
@@ -38,14 +38,14 @@ class JourneyFilter(filters.FilterSet):
             "departure_time",
             "route__destination",
             "route__source",
-            "train__train_type"
+            "train__train_type",
         )
 
 
 class TrainFilter(filters.FilterSet):
     types = filters.CharFilter(
         field_name="train_type__name",
-        lookup_expr="icontains"
+        lookup_expr="icontains",
     )
 
     class Meta:

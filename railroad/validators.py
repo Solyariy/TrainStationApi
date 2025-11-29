@@ -46,12 +46,12 @@ class JourneyValidator:
         self.data = attrs
 
     def validate_time(self):
-        if self.data.get("departure_time") >= self.data.get("arrival_time"):
+        if self.data.get("departure_time") >= self.data.get(
+            "arrival_time"
+        ):
             raise ValidationError(
                 "You can't arrive before departure"
             )
-
-
 
     def validate(self):
         self.validate_time()
