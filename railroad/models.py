@@ -86,6 +86,8 @@ class Ticket(models.Model):
                     "journey_id",
                 ),
                 name="unique_every_ticket",
+                violation_error_code=status.HTTP_400_BAD_REQUEST,
+                violation_error_message="Such ticket already exists",
             )
         ]
         ordering = ("journey__departure_time",)

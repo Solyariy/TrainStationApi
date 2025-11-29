@@ -5,12 +5,10 @@ from rest_framework.serializers import ValidationError
 # crew is free at the journey dates
 
 
-class OrderValidator:
-    def __init__(self, attrs: dict):
-        self.data = attrs
-
-    def validate_places(self):
-        for ticket in self.data.get("tickets"):
+class OrderValidatorMixin:
+    @staticmethod
+    def validate_places(attrs):
+        for ticket in attrs.get("tickets"):
             journey = ticket.get("journey")
             train = journey.train
             if ticket.get("seat") > train.places_in_cargo:
@@ -24,34 +22,45 @@ class OrderValidator:
                     f"maximum = {train.cargo_num}"
                 )
 
-    def validate_same_places(self):
+    @staticmethod
+    def validate_same_places(attrs):
         unique_places = set(
             (d["seat"], d["cargo"], d["journey"].id)
-            for d in self.data.get("tickets")
+            for d in attrs.get("tickets")
         )
-        if len(unique_places) != len(
-            self.data.get("tickets")
-        ):
+        if len(unique_places) != len(attrs.get("tickets")):
             raise ValidationError(
                 "There are tickets with the same seats"
             )
 
-    def validate(self):
-        self.validate_places()
-        self.validate_same_places()
+    def validate(self, attrs):
+        self.validate_places(attrs)
+        self.validate_same_places(attrs)
+        return attrs
 
 
-class JourneyValidator:
-    def __init__(self, attrs: dict):
-        self.data = attrs
-
-    def validate_time(self):
-        if self.data.get("departure_time") >= self.data.get(
+class JourneyValidatorMixin:
+    @staticmethod
+    def validate_time(attrs):
+        if attrs.get("departure_time") >= attrs.get(
             "arrival_time"
         ):
             raise ValidationError(
                 "You can't arrive before departure"
             )
 
-    def validate(self):
-        self.validate_time()
+    def validate(self, attrs):
+        self.validate_time(attrs)
+        return attrs
+
+
+class RouteValidatorMixin:
+    @staticmethod
+    def validate_stations(attrs):
+        if (
+            attrs.get("source").id
+            == attrs.get("destination").id
+        ):
+            raise ValidationError(
+                "Source can't be equal to destination"
+            )

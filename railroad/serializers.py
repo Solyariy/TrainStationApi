@@ -91,20 +91,15 @@ class RouteListSerializer(serializers.ModelSerializer):
         exclude = ("source", "destination")
 
 
-class JourneySerializer(serializers.ModelSerializer):
+class JourneySerializer(
+    validators.JourneyValidatorMixin,
+    serializers.ModelSerializer,
+):
     total_time_hr = serializers.FloatField(read_only=True)
 
     class Meta:
         model = Journey
         fields = "__all__"
-
-    def validate(self, attrs):
-        data = super(
-            serializers.ModelSerializer, self
-        ).validate(attrs)
-        val = validators.JourneyValidator(attrs)
-        val.validate()
-        return data
 
 
 class JourneyListSerializer(JourneySerializer):
@@ -148,7 +143,10 @@ class TicketSerializer(serializers.ModelSerializer):
         exclude = ("order",)
 
 
-class OrderSerializer(serializers.ModelSerializer):
+class OrderSerializer(
+    validators.OrderValidatorMixin,
+    serializers.ModelSerializer,
+):
     tickets = TicketSerializer(many=True)
 
     # user = serializers.HiddenField(
@@ -158,14 +156,6 @@ class OrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = "__all__"
         extra_kwargs = {"created_at": {"read_only": True}}
-
-    def validate(self, attrs):
-        data = super(
-            serializers.ModelSerializer, self
-        ).validate(attrs)
-        val = validators.OrderValidator(attrs)
-        val.validate()
-        return data
 
     def create(self, validated_data):
         tickets_data = validated_data.pop("tickets")
