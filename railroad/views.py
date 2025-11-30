@@ -1,29 +1,61 @@
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import (OpenApiExample, OpenApiParameter,
-                                   extend_schema, extend_schema_view)
+from drf_spectacular.utils import (
+    OpenApiExample,
+    OpenApiParameter,
+    extend_schema,
+    extend_schema_view,
+)
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import (
+    ModelViewSet,
+    ReadOnlyModelViewSet,
+)
 
-from railroad.filters import (CrewFilter, JourneyFilter, OrderFilter,
-                              RouteFilter, StationFilter, TicketFilter,
-                              TrainFilter)
-from railroad.models import (Crew, Journey, Order, Route, Station, Ticket,
-                             Train, TrainType)
-from railroad.serializers import (CrewDetailSerializer, CrewImageSerializer,
-                                  CrewListSerializer, CrewSerializer,
-                                  JourneyDetailSerializer,
-                                  JourneyListSerializer, JourneySerializer,
-                                  OrderSerializer, RouteDetailSerializer,
-                                  RouteListSerializer, RouteSerializer,
-                                  StationImageSerializer,
-                                  StationListDetailSerializer,
-                                  StationSerializer, TicketDetailSerializer,
-                                  TicketListSerializer, TrainDetailSerializer,
-                                  TrainImageSerializer, TrainListSerializer,
-                                  TrainSerializer, TrainTypeSerializer)
+from railroad.filters import (
+    CrewFilter,
+    JourneyFilter,
+    OrderFilter,
+    RouteFilter,
+    StationFilter,
+    TicketFilter,
+    TrainFilter,
+)
+from railroad.models import (
+    Crew,
+    Journey,
+    Order,
+    Route,
+    Station,
+    Ticket,
+    Train,
+    TrainType,
+)
+from railroad.serializers import (
+    CrewDetailSerializer,
+    CrewImageSerializer,
+    CrewListSerializer,
+    CrewSerializer,
+    JourneyDetailSerializer,
+    JourneyListSerializer,
+    JourneySerializer,
+    OrderSerializer,
+    RouteDetailSerializer,
+    RouteListSerializer,
+    RouteSerializer,
+    StationImageSerializer,
+    StationListDetailSerializer,
+    StationSerializer,
+    TicketDetailSerializer,
+    TicketListSerializer,
+    TrainDetailSerializer,
+    TrainImageSerializer,
+    TrainListSerializer,
+    TrainSerializer,
+    TrainTypeSerializer,
+)
 
 
 @extend_schema_view(
@@ -53,7 +85,9 @@ class TicketViewSet(ReadOnlyModelViewSet):
 
     def get_queryset(self):
         if not self.request.user.is_staff:
-            return self.queryset.filter(order__user=self.request.user)
+            return self.queryset.filter(
+                order__user=self.request.user
+            )
         return self.queryset
 
     def get_serializer_class(self):
@@ -142,13 +176,17 @@ class JourneyViewSet(ModelViewSet):
 )
 class OrderViewSet(ModelViewSet):
     filterset_class = OrderFilter
-    queryset = Order.objects.select_related("user").prefetch_related("tickets")
+    queryset = Order.objects.select_related(
+        "user"
+    ).prefetch_related("tickets")
     serializer_class = OrderSerializer
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         if not self.request.user.is_staff:
-            return self.queryset.filter(user_id=self.request.user.id)
+            return self.queryset.filter(
+                user_id=self.request.user.id
+            )
         return self.queryset
 
     def perform_create(self, serializer):
@@ -205,10 +243,14 @@ class CrewViewSet(ModelViewSet):
     )
     def upload_image(self, request, pk=None):
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data)
+        serializer = self.get_serializer(
+            instance, data=request.data
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(
+            serializer.data, status=status.HTTP_200_OK
+        )
 
 
 class TrainTypeViewSet(ModelViewSet):
@@ -247,10 +289,14 @@ class TrainViewSet(ModelViewSet):
     )
     def upload_image(self, request, pk=None):
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data)
+        serializer = self.get_serializer(
+            instance, data=request.data
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(
+            serializer.data, status=status.HTTP_200_OK
+        )
 
 
 @extend_schema_view(
@@ -292,10 +338,14 @@ class StationViewSet(ModelViewSet):
     )
     def upload_image(self, request, pk=None):
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data)
+        serializer = self.get_serializer(
+            instance, data=request.data
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(
+            serializer.data, status=status.HTTP_200_OK
+        )
 
 
 @extend_schema_view(
@@ -326,7 +376,9 @@ class StationViewSet(ModelViewSet):
 )
 class RouteViewSet(ModelViewSet):
     filterset_class = RouteFilter
-    queryset = Route.objects.select_related("source", "destination")
+    queryset = Route.objects.select_related(
+        "source", "destination"
+    )
 
     def get_serializer_class(self):
         if self.action == "list":

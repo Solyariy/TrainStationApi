@@ -7,7 +7,10 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("railroad", "0021_remove_station_unique_all_stations_and_more"),
+        (
+            "railroad",
+            "0021_remove_station_unique_all_stations_and_more",
+        ),
     ]
 
     operations = [
@@ -15,19 +18,26 @@ class Migration(migrations.Migration):
             model_name="route",
             name="distance",
             field=models.IntegerField(
-                null=True, validators=[django.core.validators.MinValueValidator(1)]
+                null=True,
+                validators=[
+                    django.core.validators.MinValueValidator(
+                        1
+                    )
+                ],
             ),
         ),
         migrations.AddConstraint(
             model_name="station",
             constraint=models.UniqueConstraint(
-                fields=("latitude", "longitude"), name="unique_all_stations"
+                fields=("latitude", "longitude"),
+                name="unique_all_stations",
             ),
         ),
         migrations.AddConstraint(
             model_name="ticket",
             constraint=models.UniqueConstraint(
-                fields=("cargo", "seat", "journey"), name="unique_every_ticket"
+                fields=("cargo", "seat", "journey"),
+                name="unique_every_ticket",
             ),
         ),
     ]

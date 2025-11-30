@@ -19,7 +19,11 @@ class Migration(migrations.Migration):
             name="distance",
             field=models.IntegerField(
                 null=True,
-                validators=[django.core.validators.MinValueValidator(0)],
+                validators=[
+                    django.core.validators.MinValueValidator(
+                        0
+                    )
+                ],
             ),
         ),
         migrations.AddConstraint(

@@ -3,10 +3,6 @@ from rest_framework.serializers import ValidationError
 
 from railroad.models import Station
 
-# available tickets
-# train is free at the time of journey
-# crew is free at the journey dates
-
 
 class OrderValidatorMixin:
     @staticmethod
@@ -15,9 +11,13 @@ class OrderValidatorMixin:
             journey = ticket.get("journey")
             train = journey.train
             if ticket.get("seat") <= 0:
-                errors.append("Seat can't be negative value")
+                errors.append(
+                    "Seat can't be negative value"
+                )
             if ticket.get("cargo") <= 0:
-                errors.append("Cargo can't be negative value")
+                errors.append(
+                    "Cargo can't be negative value"
+                )
             if ticket.get("seat") > train.places_in_cargo:
                 errors.append(
                     "Seat number can't be greater than places_in_cargo; "
@@ -32,10 +32,13 @@ class OrderValidatorMixin:
     @staticmethod
     def validate_same_places(attrs, errors):
         unique_places = set(
-            (d["seat"], d["cargo"], d["journey"].id) for d in attrs.get("tickets")
+            (d["seat"], d["cargo"], d["journey"].id)
+            for d in attrs.get("tickets")
         )
         if len(unique_places) != len(attrs.get("tickets")):
-            errors.append("There are tickets with the same seats")
+            errors.append(
+                "There are tickets with the same seats"
+            )
 
     def validate(self, attrs):
         errors = []
@@ -49,18 +52,34 @@ class OrderValidatorMixin:
 class JourneyValidatorMixin:
     @staticmethod
     def validate_time(attrs, errors):
-        if attrs.get("departure_time") >= attrs.get("arrival_time"):
-            errors.append("You can't arrive before departure")
+        if attrs.get("departure_time") >= attrs.get(
+            "arrival_time"
+        ):
+            errors.append(
+                "You can't arrive before departure"
+            )
 
     @staticmethod
     def validate_train_schedule(attrs, errors):
         train = attrs.get("train")
         conditions = [
-            Q(arrival_time__gte=attrs.get("departure_time")),
-            Q(departure_time__lte=attrs.get("arrival_time")),
+            Q(
+                arrival_time__gte=attrs.get(
+                    "departure_time"
+                )
+            ),
+            Q(
+                departure_time__lte=attrs.get(
+                    "arrival_time"
+                )
+            ),
         ]
-        if train.journeys.filter(conditions[0] & conditions[1]).exists():
-            errors.append("Train will be preoccupied on these dates")
+        if train.journeys.filter(
+            conditions[0] & conditions[1]
+        ).exists():
+            errors.append(
+                "Train will be preoccupied on these dates"
+            )
 
     def validate(self, attrs):
         errors = []
@@ -74,13 +93,20 @@ class JourneyValidatorMixin:
 class RouteValidatorMixin:
     @staticmethod
     def validate_stations(attrs, errors):
-        if attrs.get("source").id == attrs.get("destination").id:
-            errors.append("Source can't be equal to destination")
+        if (
+            attrs.get("source").id
+            == attrs.get("destination").id
+        ):
+            errors.append(
+                "Source can't be equal to destination"
+            )
 
     @staticmethod
     def validate_distance_non_negative(attrs, errors):
         if attrs.get("distance") <= 0:
-            errors.append("Distance should be non negative value")
+            errors.append(
+                "Distance should be non negative value"
+            )
 
     def validate(self, attrs):
         errors = []
@@ -98,7 +124,9 @@ class StationValidatorMixin:
             latitude=attrs.get("latitude"),
             longitude=attrs.get("longitude"),
         ).exists():
-            errors.append("Station with such coordinates already exists")
+            errors.append(
+                "Station with such coordinates already exists"
+            )
 
     def validate(self, attrs):
         errors = []

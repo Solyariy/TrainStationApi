@@ -15,6 +15,8 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name="ticket",
-            options={"ordering": ("journey__departure_time",)},
+            options={
+                "ordering": ("journey__departure_time",)
+            },
         ),
     ]

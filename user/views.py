@@ -1,5 +1,7 @@
 from rest_framework import generics, permissions
-from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.authentication import (
+    JWTAuthentication,
+)
 
 from user.serializers import UserSerializer
 

@@ -6,7 +6,10 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("railroad", "0019_remove_ticket_unique_every_ticket_and_more"),
+        (
+            "railroad",
+            "0019_remove_ticket_unique_every_ticket_and_more",
+        ),
     ]
 
     operations = [

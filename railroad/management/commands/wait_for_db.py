@@ -15,6 +15,10 @@ class Command(BaseCommand):
                 connection.is_usable()
                 break
             except OperationalError:
-                self.stdout.write(self.style.WARNING("Waiting"))
+                self.stdout.write(
+                    self.style.WARNING("Waiting")
+                )
                 time.sleep(0.2)
-        self.stdout.write(self.style.SUCCESS("No more sleeping"))
+        self.stdout.write(
+            self.style.SUCCESS("No more sleeping")
+        )
