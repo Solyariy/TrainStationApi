@@ -1,0 +1,9 @@
+.venv
+.idea
+README.md
+readme-images
+.gitignore
+DS-Store
+Dockerfile
+docker-compose.yaml
+pyproject.toml
