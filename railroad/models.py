@@ -84,11 +84,9 @@ class Ticket(models.Model):
                 fields=(
                     "cargo",
                     "seat",
-                    "journey_id",
+                    "journey",
                 ),
                 name="unique_every_ticket",
-                violation_error_code=status.HTTP_400_BAD_REQUEST,
-                violation_error_message="Such ticket already exists",
             )
         ]
         ordering = ("journey__departure_time",)
@@ -157,8 +155,6 @@ class Station(models.Model):
             models.UniqueConstraint(
                 fields=("latitude", "longitude"),
                 name="unique_all_stations",
-                violation_error_code=status.HTTP_400_BAD_REQUEST,
-                violation_error_message="Such Station already exists",
             ),
         ]
 
@@ -179,7 +175,7 @@ class Route(models.Model):
     )
     distance = models.IntegerField(
         null=True,
-        validators=[validators.MinValueValidator(0)],
+        validators=[validators.MinValueValidator(1)]
     )
 
     class Meta:

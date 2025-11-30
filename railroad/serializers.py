@@ -55,7 +55,10 @@ class TrainImageSerializer(serializers.ModelSerializer):
         fields = ("id", "image")
 
 
-class StationSerializer(serializers.ModelSerializer):
+class StationSerializer(
+    validators.StationValidatorMixin,
+    serializers.ModelSerializer
+):
     class Meta:
         model = Station
         exclude = ("image",)
@@ -75,7 +78,10 @@ class StationImageSerializer(serializers.ModelSerializer):
         fields = ("id", "image")
 
 
-class RouteSerializer(serializers.ModelSerializer):
+class RouteSerializer(
+    validators.RouteValidatorMixin,
+    serializers.ModelSerializer
+):
     class Meta:
         model = Route
         fields = "__all__"
