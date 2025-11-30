@@ -12,6 +12,7 @@ from railroad.models import (
     Train,
     TrainType,
 )
+from railroad.validators import TrainValidatorMixin
 
 
 class TrainTypeSerializer(serializers.ModelSerializer):
@@ -20,7 +21,10 @@ class TrainTypeSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class TrainSerializer(serializers.ModelSerializer):
+class TrainSerializer(
+    TrainValidatorMixin,
+    serializers.ModelSerializer
+):
     class Meta:
         model = Train
         exclude = ("train_type",)
@@ -39,7 +43,8 @@ class TrainDetailSerializer(serializers.ModelSerializer):
 
 class TrainListSerializer(serializers.ModelSerializer):
     train_type = serializers.CharField(
-        source="train_type.name"
+        source="train_type.name",
+        allow_null=True
     )
     total_seats = serializers.IntegerField(read_only=True)
 

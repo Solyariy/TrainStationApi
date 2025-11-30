@@ -134,3 +134,28 @@ class StationValidatorMixin:
         if errors:
             raise ValidationError(errors)
         return attrs
+
+
+class TrainValidatorMixin:
+    @staticmethod
+    def validate_non_negativity(attrs, errors):
+        if attrs.get("cargo_num") < 0:
+            errors.append(
+                "The number of cargo must be non negative value"
+            )
+        if attrs.get("places_in_cargo") < 0:
+            errors.append(
+                "The number of places in cargo must be non negative value"
+            )
+        if attrs.get("cargo_num") == 0 and attrs.get("places_in_cargo") != 0:
+            errors.append(
+                "Train without cargo can't have non zero places"
+            )
+
+    def validate(self, attrs):
+        errors = []
+        self.validate_non_negativity(attrs, errors)
+        if errors:
+            raise ValidationError(errors)
+        return attrs
+
