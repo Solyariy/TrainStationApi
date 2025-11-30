@@ -183,10 +183,10 @@ class OrderSerializer(
     serializers.ModelSerializer,
 ):
     tickets = TicketSerializer(many=True)
+    user = serializers.HiddenField(
+        default=serializers.CurrentUserDefault()
+    )
 
-    # user = serializers.HiddenField(
-    #     default=serializers.CurrentUserDefault()
-    # )
     class Meta:
         model = Order
         fields = "__all__"

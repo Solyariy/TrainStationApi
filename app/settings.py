@@ -50,7 +50,7 @@ INSTALLED_APPS = [
 ]
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10000),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=4),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "ROTATE_REFRESH_TOKENS": True,
 }
@@ -69,7 +69,7 @@ REST_FRAMEWORK = {
         "anon": "10/min",
         "user": "40/min",
     },
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 

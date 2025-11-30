@@ -7,7 +7,8 @@ from rest_framework.viewsets import (
 )
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, extend_schema_view
-from railroad.filters import JourneyFilter, TrainFilter, CrewFilter
+from railroad.filters import JourneyFilter, TrainFilter, CrewFilter, StationFilter, TicketFilter, OrderFilter, \
+    RouteFilter
 from railroad.models import (
     Crew,
     Journey,
@@ -43,13 +44,37 @@ from railroad.serializers import (
 )
 
 
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="journey",
+                type=OpenApiTypes.INT,
+                description="Filter tickets by journey_id"
+            ),
+            OpenApiParameter(
+                name="cargo",
+                type=OpenApiTypes.INT,
+                description="Returns tickets from specific cargo (better use with journey filter)"
+            )
+        ]
+    )
+)
 class TicketViewSet(ReadOnlyModelViewSet):
+    filterset_class = TicketFilter
     queryset = Ticket.objects.select_related(
         "journey__route__source",
         "journey__route__destination",
         "journey__train__train_type",
         "order__user",
     )
+
+    def get_queryset(self):
+        if not self.request.user.is_staff:
+            return self.queryset.filter(
+                order__user=self.request.user
+            )
+        return self.queryset
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -114,11 +139,38 @@ class JourneyViewSet(ModelViewSet):
         return JourneySerializer
 
 
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="created_after",
+                type=OpenApiTypes.DATETIME,
+                description="Returns orders created after specified date"
+            ),
+            OpenApiParameter(
+                name="created_before",
+                type=OpenApiTypes.DATETIME,
+                description="Returns orders created before specified date"
+            ),
+            OpenApiParameter(
+                name="user",
+                type=OpenApiTypes.INT,
+                description="Returns orders of specific user"
+            ),
+        ]
+    )
+)
 class OrderViewSet(ModelViewSet):
-    queryset = Order.objects.select_related(
-        "user"
-    ).prefetch_related("tickets")
+    filterset_class = OrderFilter
+    queryset = Order.objects
     serializer_class = OrderSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(
+            user_id=self.request.user.id
+        ).select_related(
+            "user"
+        ).prefetch_related("tickets")
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -230,7 +282,29 @@ class TrainViewSet(ModelViewSet):
         )
 
 
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="name",
+                type=OpenApiTypes.STR,
+                description="Filter stations by name"
+            ),
+            OpenApiParameter(
+                name="latitude_range",
+                type=OpenApiTypes.INT,
+                description="Returns station within specified latitude range"
+            ),
+            OpenApiParameter(
+                name="longitude_range",
+                type=OpenApiTypes.INT,
+                description="Returns station within specified longitude range"
+            )
+        ]
+    )
+)
 class StationViewSet(ModelViewSet):
+    filterset_class = StationFilter
     queryset = Station.objects.all()
 
     def get_serializer_class(self):
@@ -257,7 +331,34 @@ class StationViewSet(ModelViewSet):
         )
 
 
+@extend_schema_view(
+    list=extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="source",
+                type=OpenApiTypes.STR,
+                description="Filter stations by source name"
+            ),
+            OpenApiParameter(
+                name="destination",
+                type=OpenApiTypes.STR,
+                description="Filter stations by destination name"
+            ),
+            OpenApiParameter(
+                name="distance_gt",
+                type=OpenApiTypes.INT,
+                description="Returns router with distance greater than specified"
+            ),
+            OpenApiParameter(
+                name="distance_lt",
+                type=OpenApiTypes.INT,
+                description="Returns router with distance less than specified"
+            )
+        ]
+    )
+)
 class RouteViewSet(ModelViewSet):
+    filterset_class = RouteFilter
     queryset = Route.objects.select_related(
         "source", "destination"
     )

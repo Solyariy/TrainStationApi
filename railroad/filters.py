@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 
-from railroad.models import Journey, Train, Crew
+from railroad.models import Journey, Train, Crew, Station, Ticket, Order, Route
 
 
 class JourneyFilter(filters.FilterSet):
@@ -68,3 +68,70 @@ class CrewFilter(filters.FilterSet):
     class Meta:
         model = Crew
         fields = ("first_name", "last_name", "journey")
+
+
+class StationFilter(filters.FilterSet):
+    name = filters.CharFilter(
+        field_name="name",
+        lookup_expr="icontains"
+    )
+    latitude_range = filters.NumericRangeFilter(
+        field_name="latitude",
+    )
+    longitude_range = filters.NumericRangeFilter(
+        field_name="longitude",
+    )
+
+    class Meta:
+        model = Station
+        fields = ("name", "latitude_range", "longitude_range")
+
+
+class TicketFilter(filters.FilterSet):
+    class Meta:
+        model = Ticket
+        fields = ("journey", "cargo")
+
+
+class OrderFilter(filters.FilterSet):
+    created_after = filters.DateTimeFilter(
+        field_name="created_at",
+        lookup_expr="date__gte"
+    )
+    created_before = filters.DateTimeFilter(
+        field_name="created_at",
+        lookup_expr="date__lte"
+    )
+
+    class Meta:
+        model = Order
+        fields = ("created_after", "created_before", "user")
+
+
+class RouteFilter(filters.FilterSet):
+    source = filters.CharFilter(
+        field_name="source__name",
+        lookup_expr="icontains"
+    )
+    destination = filters.CharFilter(
+        field_name="destination__name",
+        lookup_expr="icontains"
+    )
+    distance_gt = filters.NumberFilter(
+        field_name="distance",
+        lookup_expr="gte"
+    )
+    distance_lt = filters.NumberFilter(
+        field_name="distance",
+        lookup_expr="lte"
+    )
+
+
+    class Meta:
+        model = Route
+        fields = (
+            "source",
+            "destination",
+            "distance_gt",
+            "distance_lt"
+        )
