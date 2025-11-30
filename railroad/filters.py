@@ -126,7 +126,6 @@ class RouteFilter(filters.FilterSet):
         lookup_expr="lte"
     )
 
-
     class Meta:
         model = Route
         fields = (

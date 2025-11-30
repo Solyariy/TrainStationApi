@@ -162,18 +162,17 @@ class JourneyViewSet(ModelViewSet):
 )
 class OrderViewSet(ModelViewSet):
     filterset_class = OrderFilter
-    queryset = Order.objects
+    queryset = Order.objects.select_related(
+        "user"
+    ).prefetch_related("tickets")
     serializer_class = OrderSerializer
 
     def get_queryset(self):
-        return self.queryset.filter(
-            user_id=self.request.user.id
-        ).select_related(
-            "user"
-        ).prefetch_related("tickets")
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        if not self.request.user.is_staff:
+            return self.queryset.filter(
+                user_id=self.request.user.id
+            )
+        return self.queryset
 
 
 @extend_schema_view(
