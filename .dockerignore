@@ -1,13 +1,9 @@
 .venv
-.flake8
-.github
 .idea
 README.md
+readme-images
 .gitignore
 DS-Store
 Dockerfile
 docker-compose.yaml
 pyproject.toml
-uv.lock
-.uv-cache
-readme-images
