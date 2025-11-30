@@ -22,8 +22,7 @@ class TrainTypeSerializer(serializers.ModelSerializer):
 
 
 class TrainSerializer(
-    TrainValidatorMixin,
-    serializers.ModelSerializer
+    TrainValidatorMixin, serializers.ModelSerializer
 ):
     class Meta:
         model = Train
@@ -43,8 +42,7 @@ class TrainDetailSerializer(serializers.ModelSerializer):
 
 class TrainListSerializer(serializers.ModelSerializer):
     train_type = serializers.CharField(
-        source="train_type.name",
-        allow_null=True
+        source="train_type.name", allow_null=True
     )
     total_seats = serializers.IntegerField(read_only=True)
 

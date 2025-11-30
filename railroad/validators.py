@@ -147,7 +147,10 @@ class TrainValidatorMixin:
             errors.append(
                 "The number of places in cargo must be non negative value"
             )
-        if attrs.get("cargo_num") == 0 and attrs.get("places_in_cargo") != 0:
+        if (
+            attrs.get("cargo_num") == 0
+            and attrs.get("places_in_cargo") != 0
+        ):
             errors.append(
                 "Train without cargo can't have non zero places"
             )
@@ -158,4 +161,3 @@ class TrainValidatorMixin:
         if errors:
             raise ValidationError(errors)
         return attrs
-
