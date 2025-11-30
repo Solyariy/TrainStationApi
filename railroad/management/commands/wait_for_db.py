@@ -1,7 +1,8 @@
-from django.core.management.base import BaseCommand
-from django.db.utils import OperationalError
-from django.db import connections
 import time
+
+from django.core.management.base import BaseCommand
+from django.db import connections
+from django.db.utils import OperationalError
 
 
 class Command(BaseCommand):
@@ -14,10 +15,6 @@ class Command(BaseCommand):
                 connection.is_usable()
                 break
             except OperationalError:
-                self.stdout.write(
-                    self.style.WARNING("Waiting")
-                )
+                self.stdout.write(self.style.WARNING("Waiting"))
                 time.sleep(0.2)
-        self.stdout.write(
-            self.style.SUCCESS("No more sleeping")
-        )
+        self.stdout.write(self.style.SUCCESS("No more sleeping"))

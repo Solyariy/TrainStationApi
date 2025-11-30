@@ -26,11 +26,7 @@ class Journey(models.Model):
     @property
     def total_time_hr(self):
         return round(
-            (
-                self.arrival_time.timestamp()
-                - self.departure_time.timestamp()
-            )
-            / 3600,
+            (self.arrival_time.timestamp() - self.departure_time.timestamp()) / 3600,
             2,
         )
 
@@ -47,9 +43,7 @@ class Journey(models.Model):
 
 
 class Order(models.Model):
-    created_at = models.DateTimeField(
-        auto_now_add=True, editable=False
-    )
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -57,11 +51,7 @@ class Order(models.Model):
     )
 
     def __str__(self):
-        return (
-            self.user.get_full_name()
-            + " "
-            + str(self.created_at)
-        )
+        return self.user.get_full_name() + " " + str(self.created_at)
 
 
 class Ticket(models.Model):
@@ -101,9 +91,7 @@ class Crew(models.Model):
         null=True,
         related_name="crew",
     )
-    image = models.ImageField(
-        upload_to=path_to_media, null=True
-    )
+    image = models.ImageField(upload_to=path_to_media, null=True)
 
     @property
     def full_name(self):
@@ -130,9 +118,7 @@ class Train(models.Model):
         related_name="trains",
         null=True,
     )
-    image = models.ImageField(
-        upload_to=path_to_media, null=True
-    )
+    image = models.ImageField(upload_to=path_to_media, null=True)
 
     @property
     def total_seats(self):
@@ -146,9 +132,7 @@ class Station(models.Model):
     name = models.CharField(max_length=255, unique=True)
     latitude = models.FloatField()
     longitude = models.FloatField()
-    image = models.ImageField(
-        upload_to=path_to_media, null=True
-    )
+    image = models.ImageField(upload_to=path_to_media, null=True)
 
     class Meta:
         constraints = [
@@ -174,17 +158,14 @@ class Route(models.Model):
         related_name="destined_routes",
     )
     distance = models.IntegerField(
-        null=True,
-        validators=[validators.MinValueValidator(1)]
+        null=True, validators=[validators.MinValueValidator(1)]
     )
 
     class Meta:
         constraints = [
             models.CheckConstraint(
                 name="source_not_equal_destination_constraint",
-                condition=~Q(
-                    source__exact=F("destination")
-                ),
+                condition=~Q(source__exact=F("destination")),
             )
         ]
 

@@ -3,16 +3,8 @@ from rest_framework import serializers, status
 from rest_framework.exceptions import ValidationError
 
 from railroad import validators
-from railroad.models import (
-    Crew,
-    Journey,
-    Order,
-    Route,
-    Station,
-    Ticket,
-    Train,
-    TrainType,
-)
+from railroad.models import (Crew, Journey, Order, Route, Station, Ticket,
+                             Train, TrainType)
 
 
 class TrainTypeSerializer(serializers.ModelSerializer):
@@ -28,9 +20,7 @@ class TrainSerializer(serializers.ModelSerializer):
 
 
 class TrainDetailSerializer(serializers.ModelSerializer):
-    train_type_info = TrainTypeSerializer(
-        source="train_type", read_only=True
-    )
+    train_type_info = TrainTypeSerializer(source="train_type", read_only=True)
     total_seats = serializers.IntegerField(read_only=True)
 
     class Meta:
@@ -39,9 +29,7 @@ class TrainDetailSerializer(serializers.ModelSerializer):
 
 
 class TrainListSerializer(serializers.ModelSerializer):
-    train_type = serializers.CharField(
-        source="train_type.name"
-    )
+    train_type = serializers.CharField(source="train_type.name")
     total_seats = serializers.IntegerField(read_only=True)
 
     class Meta:
@@ -55,18 +43,13 @@ class TrainImageSerializer(serializers.ModelSerializer):
         fields = ("id", "image")
 
 
-class StationSerializer(
-    validators.StationValidatorMixin,
-    serializers.ModelSerializer
-):
+class StationSerializer(validators.StationValidatorMixin, serializers.ModelSerializer):
     class Meta:
         model = Station
         exclude = ("image",)
 
 
-class StationListDetailSerializer(
-    serializers.ModelSerializer
-):
+class StationListDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Station
         fields = "__all__"
@@ -78,21 +61,12 @@ class StationImageSerializer(serializers.ModelSerializer):
         fields = ("id", "image")
 
 
-class RouteSerializer(
-    validators.RouteValidatorMixin,
-    serializers.ModelSerializer
-):
+class RouteSerializer(validators.RouteValidatorMixin, serializers.ModelSerializer):
+    distance = serializers.IntegerField()
+
     class Meta:
         model = Route
         fields = "__all__"
-
-    def validate(self, attrs):
-        if attrs.get("source") == attrs.get("destination"):
-            raise ValidationError(
-                "Source and Destination cannot be the same station.",
-                code=status.HTTP_400_BAD_REQUEST,
-            )
-        return super().validate(attrs)
 
 
 class RouteDetailSerializer(serializers.ModelSerializer):
@@ -105,12 +79,8 @@ class RouteDetailSerializer(serializers.ModelSerializer):
 
 
 class RouteListSerializer(serializers.ModelSerializer):
-    source_station = serializers.CharField(
-        source="source.name"
-    )
-    destination_station = serializers.CharField(
-        source="destination.name"
-    )
+    source_station = serializers.CharField(source="source.name")
+    destination_station = serializers.CharField(source="destination.name")
 
     class Meta:
         model = Route
@@ -195,19 +165,15 @@ class OrderSerializer(
         fields = "__all__"
         extra_kwargs = {
             "created_at": {"read_only": True},
-            "user": {"read_only": True, "default": serializers.CurrentUserDefault()}
+            "user": {"read_only": True, "default": serializers.CurrentUserDefault()},
         }
-
 
     def create(self, validated_data):
         tickets_data = validated_data.pop("tickets")
 
         with transaction.atomic():
             order = Order.objects.create(**validated_data)
-            tickets_to_create = [
-                Ticket(order=order, **item)
-                for item in tickets_data
-            ]
+            tickets_to_create = [Ticket(order=order, **item) for item in tickets_data]
             Ticket.objects.bulk_create(tickets_to_create)
 
         return order

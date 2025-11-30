@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 
-from railroad.models import Journey, Train, Crew, Station, Ticket, Order, Route
+from railroad.models import Crew, Journey, Order, Route, Station, Ticket, Train
 
 
 class JourneyFilter(filters.FilterSet):
@@ -8,16 +8,12 @@ class JourneyFilter(filters.FilterSet):
         field_name="departure_time",
         lookup_expr="gt",
     )
-    departure_before = filters.DateFilter(
-        field_name="departure_time", lookup_expr="lt"
-    )
+    departure_before = filters.DateFilter(field_name="departure_time", lookup_expr="lt")
     arrival_after = filters.DateFilter(
         field_name="arrival_time",
         lookup_expr="gt",
     )
-    arrival_before = filters.DateFilter(
-        field_name="arrival_time", lookup_expr="lt"
-    )
+    arrival_before = filters.DateFilter(field_name="arrival_time", lookup_expr="lt")
     destination = filters.CharFilter(
         field_name="route__destination__name",
         lookup_expr="icontains",
@@ -71,10 +67,7 @@ class CrewFilter(filters.FilterSet):
 
 
 class StationFilter(filters.FilterSet):
-    name = filters.CharFilter(
-        field_name="name",
-        lookup_expr="icontains"
-    )
+    name = filters.CharFilter(field_name="name", lookup_expr="icontains")
     latitude_range = filters.NumericRangeFilter(
         field_name="latitude",
     )
@@ -95,12 +88,10 @@ class TicketFilter(filters.FilterSet):
 
 class OrderFilter(filters.FilterSet):
     created_after = filters.DateTimeFilter(
-        field_name="created_at",
-        lookup_expr="date__gte"
+        field_name="created_at", lookup_expr="date__gte"
     )
     created_before = filters.DateTimeFilter(
-        field_name="created_at",
-        lookup_expr="date__lte"
+        field_name="created_at", lookup_expr="date__lte"
     )
 
     class Meta:
@@ -109,28 +100,13 @@ class OrderFilter(filters.FilterSet):
 
 
 class RouteFilter(filters.FilterSet):
-    source = filters.CharFilter(
-        field_name="source__name",
-        lookup_expr="icontains"
-    )
+    source = filters.CharFilter(field_name="source__name", lookup_expr="icontains")
     destination = filters.CharFilter(
-        field_name="destination__name",
-        lookup_expr="icontains"
+        field_name="destination__name", lookup_expr="icontains"
     )
-    distance_gt = filters.NumberFilter(
-        field_name="distance",
-        lookup_expr="gte"
-    )
-    distance_lt = filters.NumberFilter(
-        field_name="distance",
-        lookup_expr="lte"
-    )
+    distance_gt = filters.NumberFilter(field_name="distance", lookup_expr="gte")
+    distance_lt = filters.NumberFilter(field_name="distance", lookup_expr="lte")
 
     class Meta:
         model = Route
-        fields = (
-            "source",
-            "destination",
-            "distance_gt",
-            "distance_lt"
-        )
+        fields = ("source", "destination", "distance_gt", "distance_lt")
