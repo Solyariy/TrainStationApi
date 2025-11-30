@@ -1,5 +1,6 @@
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import (
     ModelViewSet,
@@ -166,6 +167,7 @@ class OrderViewSet(ModelViewSet):
         "user"
     ).prefetch_related("tickets")
     serializer_class = OrderSerializer
+    permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         if not self.request.user.is_staff:
@@ -173,6 +175,9 @@ class OrderViewSet(ModelViewSet):
                 user_id=self.request.user.id
             )
         return self.queryset
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 @extend_schema_view(

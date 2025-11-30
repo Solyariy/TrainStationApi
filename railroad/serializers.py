@@ -183,14 +183,15 @@ class OrderSerializer(
     serializers.ModelSerializer,
 ):
     tickets = TicketSerializer(many=True)
-    user = serializers.HiddenField(
-        default=serializers.CurrentUserDefault()
-    )
 
     class Meta:
         model = Order
         fields = "__all__"
-        extra_kwargs = {"created_at": {"read_only": True}}
+        extra_kwargs = {
+            "created_at": {"read_only": True},
+            "user": {"read_only": True, "default": serializers.CurrentUserDefault()}
+        }
+
 
     def create(self, validated_data):
         tickets_data = validated_data.pop("tickets")

@@ -12,6 +12,14 @@ class OrderValidatorMixin:
         for ticket in attrs.get("tickets"):
             journey = ticket.get("journey")
             train = journey.train
+            if ticket.get("seat") <= 0:
+                raise ValidationError(
+                    "Seat can't be negative value"
+                )
+            if ticket.get("cargo") <= 0:
+                raise ValidationError(
+                    "Cargo can't be negative value"
+                )
             if ticket.get("seat") > train.places_in_cargo:
                 raise ValidationError(
                     "Seat number can't be greater than places_in_cargo; "
